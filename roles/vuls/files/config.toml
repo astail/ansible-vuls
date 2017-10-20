@@ -1,0 +1,5 @@
+[servers]
+
+[servers.localhost]
+host = "localhost"
+port = "local"

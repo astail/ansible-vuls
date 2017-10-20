@@ -1,0 +1,24 @@
+---
+
+- name: tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz
+  unarchive: remote_src=yes src=https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz dest=/usr/local creates=/usr/local/go
+
+- name: touch /etc/profile.d/goenv.sh
+  command: touch /etc/profile.d/goenv.sh creates=/etc/profile.d/goenv.sh
+
+- name: edit /etc/profile.d/goenv.sh
+  lineinfile:
+    regexp='{{ item.regexp }}'
+    line='{{ item.line }}'
+    insertafter=EOF
+    state=present
+    dest=/etc/profile.d/goenv.sh
+  with_items:
+    - { regexp: 'export GOROOT=', line: 'export GOROOT=/usr/local/go' }
+    - { regexp: 'export GOPATH=', line: 'export GOPATH=$HOME/go' }
+    - { regexp: 'export PATH=', line: 'export PATH=$PATH:$GOROOT/bin:$GOPATH/bin' }
+  register: result
+
+- name: source /etc/profile.d/goenv.sh
+  shell: source /etc/profile.d/goenv.sh && go version
+  when: result|changed

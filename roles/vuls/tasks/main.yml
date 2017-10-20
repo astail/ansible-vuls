@@ -1,0 +1,77 @@
+---
+
+- name: install vuls common
+  yum: name={{ item }}
+  with_items:
+    - sqlite
+    - git
+    - gcc
+    - make
+    - wget
+
+- name: vuls user add
+  user: name=vuls
+
+- name: vuls user password set password=vuls_pass
+  user: name=vuls password='$6$nNNrbEjClhmm5TS8$SM.KkNcuWGKG4W2XdNRJdQv/733ZPKszn5jTmVvrR841KQIcLX3..9kr.VE0DLlUyuxEUJ7Xnr6Sr2pdjtv1g/'
+
+- name: vuls user add wheel group
+  user: name=vuls groups=wheel
+
+- name: mkdir vuls/.ssh
+  file: path=/home/vuls/.ssh owner=vuls group=vuls mode=700 state=directory
+
+- name: copy authorized_keys
+  copy: src=authorized_keys dest=/home/vuls/.ssh/authorized_keys mode=600 owner=vuls group=vuls
+
+- name: mkdir vuls log
+  file: path=/var/log/vuls owner=vuls group=wheel mode=700 state=directory
+
+## go-cve-dictionary
+
+- name: mkdir /home/vuls/go/src/github.com/kotakanbe
+  file: path=/home/vuls/go/src/github.com/kotakanbe owner=vuls group=vuls state=directory
+
+- name: git clone https://github.com/kotakanbe/go-cve-dictionary.git
+  git: repo=https://github.com/kotakanbe/go-cve-dictionary.git dest=/home/vuls/go/src/github.com/kotakanbe/go-cve-dictionary
+  become_user: vuls
+
+- name: go-cve-dictionary make install
+  shell: source /etc/profile.d/goenv.sh && make install chdir=/home/vuls/go/src/github.com/kotakanbe/go-cve-dictionary creates=/home/vuls/go/bin/go-cve-dictionary
+  become_user: vuls
+
+
+## goval-dictionary
+
+- name: git clone https://github.com/kotakanbe/go-cve-dictionary.git
+  git: repo=https://github.com/kotakanbe/goval-dictionary.git dest=/home/vuls/go/src/github.com/kotakanbe/goval-dictionary
+  become_user: vuls
+
+- name: goval-dictionary make install
+  shell: source /etc/profile.d/goenv.sh && make install chdir=/home/vuls/go/src/github.com/kotakanbe/goval-dictionary creates=/home/vuls/go/bin/goval-dictionary
+  become_user: vuls
+
+- name: get cve.sqlite3
+  shell: source /etc/profile.d/goenv.sh && for i in `seq 2002 $(date +"%Y")`; do go-cve-dictionary fetchnvd -years $i; done chdir=/home/vuls creates=/home/vuls/cve.sqlite3
+  become_user: vuls
+
+- name: goval-dictionary fetch-redhat 7
+  shell: source /etc/profile.d/goenv.sh && goval-dictionary fetch-redhat 7 chdir=/home/vuls creates=/home/vuls/oval.sqlite3
+  become_user: vuls
+
+
+## vuls
+
+- name: mkdir /home/vuls/go/src/github.com/future-architect
+  file: path=/home/vuls/go/src/github.com/future-architect owner=vuls group=vuls state=directory
+
+- name: git clone https://github.com/future-architect/vuls.git
+  git: repo=https://github.com/future-architect/vuls.git dest=/home/vuls/go/src/github.com/future-architect/vuls
+  become_user: vuls
+
+- name: vuls make install
+  shell: source /etc/profile.d/goenv.sh && make install chdir=/home/vuls/go/src/github.com/future-architect/vuls creates=/home/vuls/go/bin/vuls
+  become_user: vuls
+
+- name: copy config.toml
+  copy: src=config.toml dest=/home/vuls/config.toml owner=vuls group=vuls

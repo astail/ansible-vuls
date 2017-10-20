@@ -1,0 +1,8 @@
+---
+
+- hosts: vagrant
+  become: true
+  roles:
+    - common
+    - sshd
+    - vuls
