@@ -36,52 +36,27 @@
 - name: yum group-install
   yum: name="{{ item }}"
   with_items:
-   - "@Base"
-   - "@Development tools"
+    - "@Base"
+    - "@Development tools"
 
 - name: install common service
   yum: name="{{ item }}"
   register: install_status
   with_items:
-   - acpid
-   - sysstat
-   - tcpdump
-   - git
-   - dstat
-   - zsh
-   - ksh
-   - gdisk
-   - ncurses-devel
-   - rsyslog
-   - ntp
-   - logrotate
-   - ethtool
-   - sssd
-   - sssd-client
-   - sssd-ldap
-   - net-tools
-   - telnet
-   - traceroute
-   - wget
-   - vim
-   - authconfig
-   - ncurses
+    - git
+    - ntp
+    - net-tools
+    - wget
+    - vim
 
 - name: install epel common service
   yum: name="{{ item }}" enablerepo=epel
   with_items:
-   - iftop
-   - htop
-   - jq
+    - htop
+    - jq
 
 - name: epel repository disable
   replace: dest=/etc/yum.repos.d/epel.repo regexp="enabled *= *1" replace="enabled=0"
 
 - name: systemctl daemon reload
   systemd: name=* daemon_reload=yes
-
-- name: start common service
-  service: name="{{ item }}" enabled=yes
-  with_items:
-   - acpid
-   - sysstat
