@@ -1,10 +1,12 @@
 ---
 
 - name: install libselinux-python
-  yum: name=libselinux-python
+  yum:
+    name: libselinux-python
 
 - name: disable selinux
-  selinux: state=disabled
+  selinux:
+    state: disabled
   changed_when: false
 
 - name: check language
@@ -28,19 +30,24 @@
   when: timedatectl_status.rc == 1
 
 - name: setup umask
-  lineinfile: dest=/etc/profile line='umask 0022'
+  lineinfile:
+    path: /etc/profile
+    line: 'umask 0022'
 
 - name: install epel repository
-  yum: name=epel-release
+  yum:
+    name: epel-release
 
 - name: yum group-install
-  yum: name="{{ item }}"
+  yum:
+    name: "{{ item }}"
   with_items:
     - "@Base"
     - "@Development tools"
 
 - name: install common service
-  yum: name="{{ item }}"
+  yum:
+    name: "{{ item }}"
   register: install_status
   with_items:
     - git
@@ -50,13 +57,20 @@
     - vim
 
 - name: install epel common service
-  yum: name="{{ item }}" enablerepo=epel
+  yum:
+    name: "{{ item }}"
+    enablerepo: epel
   with_items:
     - htop
     - jq
 
 - name: epel repository disable
-  replace: dest=/etc/yum.repos.d/epel.repo regexp="enabled *= *1" replace="enabled=0"
+  replace:
+    dest: /etc/yum.repos.d/epel.repo
+    regexp: "enabled *= *1"
+    replace: "enabled=0"
 
 - name: systemctl daemon reload
-  systemd: name=* daemon_reload=yes
+  systemd:
+    name: "*"
+    daemon_reload: yes
