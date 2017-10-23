@@ -25,7 +25,7 @@ Vagrant.configure("2") do |config|
       ansible.playbook = "site.yml"
       ansible.inventory_path = "inventory/hosts"
       ansible.limit = 'vagrant'
-      ansible.verbose = "v"
+#      ansible.verbose = "v"
     end
   end
 
