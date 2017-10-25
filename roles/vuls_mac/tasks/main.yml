@@ -10,6 +10,11 @@
     - gcc
     - go
 
+- name: touch ~/.zshrc
+  command: touch ~/.zshrc
+  args:
+    creates: ~/.zshrc
+
 - name: export GO_HOME=$HOME/go
   lineinfile:
     path: ~/.zshrc
