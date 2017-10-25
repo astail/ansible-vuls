@@ -1,0 +1,97 @@
+---
+
+- name: install git sqlite3 gcc go
+  homebrew:
+    name: "{{ item }}"
+  with_items:
+    - zsh
+    - git
+    - sqlite3
+    - gcc
+    - go
+
+- name: export GO_HOME=$HOME/go
+  lineinfile:
+    path: ~/.zshrc
+    state: present
+    regexp: '^export GO_HOME=\$HOME/go'
+    line: 'export GO_HOME=$HOME/go'
+
+- name: export PATH=$PATH:$GO_HOME/bin
+  lineinfile:
+    path: ~/.zshrc
+    state: present
+    regexp: '^export PATH=\$PATH:\$GO_HOME/bin'
+    line: 'export PATH=$PATH:$GO_HOME/bin'
+
+- name: mkdir ~/vuls
+  file:
+    path: ~/vuls
+    state: directory
+
+## go-cve-dictionary
+
+- name: mkdir ~/go/src/github.com/kotakanbe
+  file:
+    path: ~/go/src/github.com/kotakanbe
+    state: directory
+
+- name: git clone https://github.com/kotakanbe/go-cve-dictionary.git
+  git:
+    repo: https://github.com/kotakanbe/go-cve-dictionary.git
+    dest: ~/go/src/github.com/kotakanbe/go-cve-dictionary
+
+- name: go-cve-dictionary make install
+  shell: source ~/.zshrc && make install
+  args:
+    chdir: ~/go/src/github.com/kotakanbe/go-cve-dictionary
+    creates: ~/go/bin/go-cve-dictionary
+
+## goval-dictionary
+
+- name: git clone https://github.com/kotakanbe/go-cve-dictionary.git
+  git:
+    repo: https://github.com/kotakanbe/goval-dictionary.git
+    dest: ~/go/src/github.com/kotakanbe/goval-dictionary
+
+- name: goval-dictionary make install
+  shell: source ~/.zshrc && make install
+  args:
+    chdir: ~/go/src/github.com/kotakanbe/goval-dictionary
+    creates: ~/go/bin/goval-dictionary
+
+- name: get cve.sqlite3
+  shell: source ~/.zshrc && for i in `seq 2002 $(date +"%Y")`; do go-cve-dictionary fetchnvd -years $i; done
+  args:
+    chdir: ~/vuls
+    creates: ~/vuls/cve.sqlite3
+
+- name: goval-dictionary fetch-redhat 7
+  shell: source ~/.zshrc && goval-dictionary fetch-redhat 7
+  args:
+    chdir: ~/vuls
+    creates: ~/vuls/oval.sqlite3
+
+## vuls
+
+- name: mkdir ~/go/src/github.com/future-architect
+  file:
+    path: ~/go/src/github.com/future-architect
+    state: directory
+
+- name: git clone https://github.com/future-architect/vuls.git
+  git:
+    repo: https://github.com/future-architect/vuls.git
+    dest: ~/go/src/github.com/future-architect/vuls
+
+- name: vuls make install
+  shell: source ~/.zshrc && make install
+  args:
+    chdir: ~/go/src/github.com/future-architect/vuls
+    creates: ~/go/bin/vuls
+
+
+- name: copy config.toml.sample
+  copy:
+    src: config.toml.sample
+    dest: ~/vuls/config.toml.sample

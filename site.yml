@@ -6,3 +6,9 @@
     - common
     - sshd
     - vuls
+
+- hosts: mac
+  connection: local
+  gather_facts: no
+  roles:
+    - vuls_mac
