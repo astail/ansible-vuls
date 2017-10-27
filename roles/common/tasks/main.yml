@@ -48,7 +48,6 @@
 - name: install common service
   yum:
     name: "{{ item }}"
-  register: install_status
   with_items:
     - git
     - ntp
@@ -66,7 +65,7 @@
 
 - name: epel repository disable
   replace:
-    dest: /etc/yum.repos.d/epel.repo
+    path: /etc/yum.repos.d/epel.repo
     regexp: "enabled *= *1"
     replace: "enabled=0"
 
