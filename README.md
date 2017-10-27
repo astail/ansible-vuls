@@ -2,6 +2,8 @@
 
 ## vagrant
 
+### vuls
+
 1. install vagrant
 2. ` MacBook-Pro % brew install git ansible`
 3. ` MacBook-Pro % git clone git@github.com:astail/ansible-vuls.git`
@@ -13,6 +15,12 @@
 9. `[vuls@vuls ~]$ vuls scan`
 10. `[vuls@vuls ~]$ vuls report -format-short-text | less`
 
+### vuls-repo
+
+1. ` MacBook-Pro % ssh vuls@vuls.vagrant.com -i roles/vuls/files/id_rsa_vuls`
+2. `[vuls@vuls ~]$ cd /home/vuls/vulsrepo/server`
+3. `[vuls@vuls ~]$ ./vulsrepo-server`
+4. http://vuls.vagrant.com:5111/
 
 ## mac
 

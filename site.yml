@@ -6,6 +6,7 @@
     - common
     - sshd
     - vuls
+    - vuls_repo
 
 - hosts: mac
   connection: local

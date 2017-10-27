@@ -20,6 +20,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "vuls01" do |vuls|
     vuls.vm.hostname = "vuls.vagrant.com"
     vuls.vm.network "private_network", ip: "192.168.33.33"
+    vuls.vm.network :forwarded_port, host: 5111, guest: 5111
 
     config.vm.provision "ansible" do |ansible|
       ansible.playbook = "site.yml"

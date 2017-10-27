@@ -1,0 +1,13 @@
+---
+
+- name: git clone https://github.com/usiusi360/vulsrepo.git
+  git:
+    repo: https://github.com/usiusi360/vulsrepo.git
+    dest: /home/vuls/vulsrepo
+  become_user: vuls
+
+- name: copy vulsrepo-config.toml
+  copy:
+    src: vulsrepo-config.toml
+    dest: /home/vuls/vulsrepo/server/vulsrepo-config.toml
+  become_user: vuls
