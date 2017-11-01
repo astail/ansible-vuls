@@ -9,8 +9,8 @@ Vagrant.configure("2") do |config|
   config.ssh.insert_key = false
 
   config.vm.provider "virtualbox" do |v|
-    v.memory = 1024
-    v.cpus = 2
+    v.memory = 512
+    v.cpus = 1
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
   end
