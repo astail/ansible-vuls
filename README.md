@@ -35,7 +35,7 @@
 9. ` MacBook-Pro % vuls scan`
 10. ` MacBook-Pro % vuls report -format-short-text | less`
 
-## my_server
+## your_server
 
 1. `MacBook-Pro % vim inventory/hosts`
 2. 111.111.111.111  => your server ip address
