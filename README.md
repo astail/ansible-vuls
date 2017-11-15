@@ -34,3 +34,12 @@
 8. ` MacBook-Pro % vuls configtest`
 9. ` MacBook-Pro % vuls scan`
 10. ` MacBook-Pro % vuls report -format-short-text | less`
+
+## my_server
+
+1. `MacBook-Pro % vim inventory/hosts`
+2. 111.111.111.111  => your server ip address
+3. ssh_user_name    => your server ssh user
+4. ansible_ssh_port => your server ssh port
+5. ~/.ssh/id_rsa    => your server ssh key
+6. `MacBook-Pro % ansible-playbook -i inventory/hosts site.yml -l my_server`

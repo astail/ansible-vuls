@@ -1,5 +1,13 @@
 [vagrant]
 vuls.vagrant.com ansible_ssh_user=vagrant ansible_ssh_private_key_file=~/.vagrant.d/insecure_private_key
 
+[my_server]
+111.111.111.111 ansible_ssh_user=ssh_user_name ansible_ssh_port=2222 ansible_ssh_private_key_file=~/.ssh/id_rsa
+
 [mac]
 localhost
+
+
+[vuls_centos:children]
+vagrant
+my_server

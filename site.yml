@@ -5,6 +5,10 @@
   roles:
     - common
     - sshd
+
+- hosts: vuls_centos
+  become: true
+  roles:
     - vuls
     - vuls_repo
 
